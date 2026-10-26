@@ -1,0 +1,48 @@
+Experiment No : 1
+Title: Write a C++ program to print pascal triangles.
+Name of Student: Shamiksha Chaudhari 
+Class: SY	Div: SY1	PRN No: B25ET1005	Batch: A1
+
+Program:
+
+#include <iostream>
+using namespace std;
+int fact(int n)
+{
+    int i, fact;
+    fact = 1;
+    for(i=1 ; i<=n ; i++)
+    {
+        fact*=i;
+    }
+    return fact;
+}
+int nCr(int n , int r)
+{
+    return fact(n) /( fact(r)*fact(n-r) );
+}
+int main()
+{
+    int i , j ,rows;
+    cout << "Enter number of rows : ";
+    cin >> rows;
+    for ( i=0 ; i < rows ; i++)
+    {
+        for ( j=0 ; j < rows - i - 1 ; j++)
+        {
+            cout << " ";
+        }
+
+        for ( j=0 ; j<=i ; j++)
+        {
+            cout << nCr(i ,j) << " ";
+        }
+
+    cout << endl;
+    }
+    return 0 ;
+}
+
+
+
+
