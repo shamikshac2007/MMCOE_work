@@ -1,0 +1,49 @@
+Experiment No : 2
+Title: Perform recursive binary search using C.
+Name of Student: Shamiksha Chaudhari 
+Class: SY	Div: SY1	PRN No: B25ET1005	Batch: A1
+
+Program:
+
+#include <stdio.h>
+int binarysearch(int a[], int l, int r, int target);
+int main()
+{
+    int a[10], n, target, result ,i, m ;
+    printf("enter elements of the array : ");
+    for (i=0;i<10;i++)
+    {
+        scanf("%d" , &a[i]);
+    }
+    n = sizeof((a)) / sizeof a[0];
+    printf("enter element to be searched : ");
+    scanf("%d" , &target);
+    result=binarysearch(a , 0, n-1, target);
+    if (result != 1)
+      printf("Targeted element %d found in the array at position %d " ,target, result);
+    else
+      printf("Targeted element not found in the array");
+}
+
+int binarysearch(int a[], int l , int r, int target)
+{
+    if (l > r)
+    {
+      return 0;
+    }
+    int mid = l + ((r - l)/2);
+
+    if (a[mid] == target)
+    {
+      return mid;
+    }
+    else if (a[mid] >target)
+    {
+      return binarysearch(a ,l, mid-1 , target);
+    }
+    else
+    {
+        return binarysearch(a, mid + 1, r, target);
+    }
+ 
+}
