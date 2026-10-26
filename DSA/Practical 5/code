@@ -1,0 +1,124 @@
+Experiment No : 5
+Title: Implement Stack and Queue using arrays in C.
+Name of Student: Shamiksha Chaudhari 
+Class: SY	Div: SY1	PRN No: B25ET1005	Batch: A1
+
+Program:
+
+Part 1
+Stack using array
+#include <stdio.h>
+#define MAX 5
+int stack[MAX];
+int top = -1;
+void push(int value) {
+if (top == MAX - 1) {
+printf("Stack Overflow! Cannot push %d.\n", value);
+} else {
+stack[++top] = value;
+printf("Pushed %d to stack.\n", value);
+}
+}
+void pop() {
+if (top == -1) {
+printf("Stack Underflow! Cannot pop.\n");
+} else {
+printf("Popped %d from stack.\n", stack[top--]);
+}
+}
+void peek() {
+if (top == -1) {
+printf("Stack is empty.\n");
+} else {
+printf("Top element is %d.\n", stack[top]);
+}
+}
+void display() {
+if (top == -1) {
+printf("Stack is empty.\n");
+} else {
+printf("Stack elements: ");
+for (int i = 0; i <= top; i++) {
+printf("%d ", stack[i]);
+}
+printf("\n");
+}
+}
+int main() {
+push(1);
+push(2);
+push(3);
+push(4);
+push(5);
+push(6); // Stack Overflow
+display();
+peek();
+pop();
+display();
+return 0;
+
+
+
+
+
+PART2
+Queue using array
+#include <stdio.h>
+#define SIZE 5 // maximum size of queue
+int queue[SIZE];
+int front = -1, rear = -1;
+// Enqueue (insert element)
+void enqueue(int value) {
+if (rear == SIZE - 1) {
+printf("Queue is Full!\n");
+} else {
+if (front == -1) front = 0;
+queue[++rear] = value;
+printf("%d inserted\n", value);
+}
+}
+// Dequeue (delete element)
+void dequeue() {
+if (front == -1 || front > rear) {
+printf("Queue is Empty!\n");
+} else {
+printf("%d deleted\n", queue[front++]);
+}
+}
+// Display Queue
+void display() {
+if (front == -1 || front > rear) {
+printf("Queue is Empty!\n");
+} else {
+printf("Queue: ");
+for (int i = front; i <= rear; i++) {
+printf("%d ", queue[i]);
+}
+printf("\n");
+}
+}
+int main() {
+int choice, value;
+while (1) {
+printf("\n1. Enqueue\n2. Dequeue\n3. Display\n4. Exit\n");
+printf("Enter choice: ");
+scanf("%d", &choice);
+switch (choice) {
+case 1:
+printf("Enter value: ");
+scanf("%d", &value);
+enqueue(value);
+break;
+case 2:
+dequeue();
+break;
+case 3:
+display();
+break;
+case 4:
+return 0;
+default:
+printf("Invalid choice!\n");
+}
+}
+}
