@@ -1,0 +1,387 @@
+#include <iostream>
+
+using namespace std;
+
+void swapElements(int &a, int &b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+void displayArray(const int arr[], int n) {
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+}
+
+// Prints  [ 3 5 8 ]
+void printRange(const int arr[], int l, int r) {
+    cout << "[ ";
+    for (int i = l; i <= r; i++) cout << arr[i] << " ";
+    cout << "]";
+}
+
+void copyArray(const int source[], int dest[], int n) {
+    for (int i = 0; i < n; i++) dest[i] = source[i];
+}
+
+ 
+void bubbleSort(const int original[], int n) {
+    int arr[100];
+    copyArray(original, arr, n);
+
+    int comparisons = 0, swaps = 0;
+
+    cout << "\n--- Bubble Sort (steps ) ---\n";
+    cout << "Idea: compare neighbouring elements , swap if out of order. After each pass,\n"
+         << "the largest remaining element  to the end.\n";
+    cout << "Initial array: ";
+    displayArray(arr, n);
+
+    for (int i = 0; i < n - 1; i++) {
+        int swapped = 0;
+        cout << "\nPass " << i + 1 << ":\n";
+
+        for (int j = 0; j < n - i - 1; j++) {
+            comparisons++;
+            int a = arr[j], b = arr[j + 1];
+            cout << " Compare " << a << " and " << b;
+
+            if (a > b) {
+                swapElements(arr[j], arr[j + 1]);
+                swaps++;
+                swapped = 1;
+                cout << " -> " << a << " > " << b << ", SWAP. Array: ";
+            } else {
+                cout << " -> Properly ordered, no swap. Array: ";
+            }
+            displayArray(arr, n);
+        }
+
+        cout << " End of pass " << i + 1 << ": " << arr[n - i - 1]
+             << " is now in its final position (index " << n - i - 1 << ").\n";
+
+        if (swapped == 0) {
+            cout << " No swaps in this pass, so the array is sorted. Stopping early.\n";
+            break;
+        }
+    }
+
+    cout << "\nSorted Array: ";
+    displayArray(arr, n);
+    cout << "Total Comparisons: " << comparisons << endl;
+    cout << "Total Swaps: " << swaps << endl;
+}
+
+
+void selectionSort(const int original[], int n) {
+    int arr[100];
+    copyArray(original, arr, n);
+
+    int comparisons = 0, swaps = 0;
+
+    cout << "\n--- Selection Sort (step by step) ---\n";
+    cout << "Idea: in each pass, find the smallest element in the unsorted part\n"
+         << "and place it at the front of that part.\n";
+    cout << "Initial array: ";
+    displayArray(arr, n);
+
+    for (int i = 0; i < n - 1; i++) {
+        int minIdx = i;
+        cout << "\nPass " << i + 1 << ": find the minimum from index " << i
+             << " to " << n - 1 << ". Start with min = " << arr[minIdx] << "\n";
+
+        for (int j = i + 1; j < n; j++) {
+            comparisons++;
+            cout << " Compare " << arr[j] << " with current min " << arr[minIdx];
+            if (arr[j] < arr[minIdx]) {
+                minIdx = j;
+                cout << " -> smaller, new min = " << arr[minIdx] << " (index " << minIdx << ")\n";
+            } else {
+                cout << " -> not smaller, keep min.\n";
+            }
+        }
+
+        if (minIdx != i) {
+            cout << " Swap " << arr[i] << " (index " << i << ") with minimum "
+                 << arr[minIdx] << " (index " << minIdx << ")\n";
+            swapElements(arr[i], arr[minIdx]);
+            swaps++;
+        } else {
+            cout << " minimum is already at index " << i << ", no swap needed.\n";
+        }
+
+        cout << " Array after pass " << i + 1 << ": ";
+        displayArray(arr, n);
+    }
+
+    cout << "\nSorted Array: ";
+    displayArray(arr, n);
+    cout << "Total Comparisons: " << comparisons << endl;
+    cout << "Total Swaps: " << swaps << endl;
+}
+
+
+void insertionSort(const int original[], int n) {
+    int arr[100];
+    copyArray(original, arr, n);
+
+    int comparisons = 0, shifts = 0;
+
+    cout << "\n--- Insertion Sort (step by step) ---\n";
+    cout << "Idea: the left part is always sorted. Take the next element (key)\n"
+         << "and slide it left into its correct place, like sorting playing cards.\n";
+    cout << "Initial array: ";
+    displayArray(arr, n);
+    cout << "Treat first element " << arr[0] << " as a sorted part of size 1.\n";
+
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+
+        cout << "\nPass " << i << ": key = " << key << " (index " << i << "), sorted part: ";
+        printRange(arr, 0, i - 1);
+        cout << "\n";
+
+        while (j >= 0) {
+            comparisons++;
+            cout << " Compare " << arr[j] << " with key " << key;
+            if (arr[j] > key) {
+                arr[j + 1] = arr[j];
+                shifts++;
+                cout << " -> bigger, shift " << arr[j] << " one place right\n";
+                j--;
+            } else {
+                cout << " -> not bigger, stop here.\n";
+                break;
+            }
+        }
+
+        arr[j + 1] = key;
+        cout << " Insert key " << key << " at index " << j + 1 << ". Array: ";
+        displayArray(arr, n);
+    }
+
+    cout << "\nSorted Array: ";
+    displayArray(arr, n);
+    cout << "Total Comparisons: " << comparisons << endl;
+    cout << "Total Shifts: " << shifts << endl;
+}
+
+
+void merge(int arr[], int left, int mid, int right, int &comparisons) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    int L[50], R[50];
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int j = 0; j < n2; j++) R[j] = arr[mid + 1 + j];
+
+    cout << " MERGE: left ";
+    printRange(L, 0, n1 - 1);
+    cout << " + right ";
+    printRange(R, 0, n2 - 1);
+    cout << "\n";
+
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        comparisons++;
+        cout << " Compare " << L[i] << " (left) and " << R[j] << " (right) -> take ";
+        if (L[i] <= R[j]) {
+            cout << L[i] << "\n";
+            arr[k++] = L[i++];
+        } else {
+            cout << R[j] << "\n";
+            arr[k++] = R[j++];
+        }
+    }
+    while (i < n1) {
+        cout << " Right side finished, copy leftover " << L[i] << " from left\n";
+        arr[k++] = L[i++];
+    }
+    while (j < n2) {
+        cout << " Left side finished, copy leftover " << R[j] << " from right\n";
+        arr[k++] = R[j++];
+    }
+
+    cout << " Result: ";
+    printRange(arr, left, right);
+    cout << "\n";
+}
+
+void mergeSortHelper(int arr[], int left, int right, int &comparisons) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        cout << "\nDIVIDE: ";
+        printRange(arr, left, right);
+        cout << " into ";
+        printRange(arr, left, mid);
+        cout << " and ";
+        printRange(arr, mid + 1, right);
+        cout << "\n";
+
+        mergeSortHelper(arr, left, mid, comparisons);
+        mergeSortHelper(arr, mid + 1, right, comparisons);
+        merge(arr, left, mid, right, comparisons);
+    }
+}
+
+void mergeSort(const int original[], int n) {
+    int arr[100];
+    copyArray(original, arr, n);
+
+    int comparisons = 0;
+
+    cout << "\n--- Merge Sort (step by step) ---\n";
+    cout << "Idea: keep splitting the array in half until each piece has 1 element,\n"
+         << "then merge the pieces back together in sorted order.\n";
+    cout << "Initial array: ";
+    displayArray(arr, n);
+
+    if (n > 0) mergeSortHelper(arr, 0, n - 1, comparisons);
+
+    cout << "\nSorted Array: ";
+    displayArray(arr, n);
+    cout << "Total Comparisons: " << comparisons << endl;
+}
+
+// Quick Sort 
+int partition(int arr[], int low, int high, int &comparisons, int &swaps) {
+    int pivot = arr[high];
+    int i = low - 1;
+
+    cout << "\nPARTITION ";
+    printRange(arr, low, high);
+    cout << " with pivot = " << pivot << " (last element)\n";
+    cout << " Goal: everything smaller than pivot goes to the left side.\n";
+
+    for (int j = low; j <= high - 1; j++) {
+        comparisons++;
+        cout << " Compare " << arr[j] << " with pivot " << pivot;
+        if (arr[j] < pivot) {
+            i++;
+            cout << " -> smaller, swap arr[" << i << "]=" << arr[i]
+                 << " and arr[" << j << "]=" << arr[j] << "\n";
+            swapElements(arr[i], arr[j]);
+            swaps++;
+        } else {
+            cout << " -> not smaller, leave it on the right side.\n";
+        }
+    }
+
+    cout << " Place pivot " << pivot << " at index " << i + 1
+         << " (swap with " << arr[i + 1] << ")\n";
+    swapElements(arr[i + 1], arr[high]);
+    swaps++;
+
+    cout << " After partition: ";
+    printRange(arr, low, high);
+    cout << " -> pivot " << pivot << " is now in its final position.\n";
+    return i + 1;
+}
+
+void quickSortHelper(int arr[], int low, int high, int &comparisons, int &swaps) {
+    if (low < high) {
+        int pi = partition(arr, low, high, comparisons, swaps);
+        quickSortHelper(arr, low, pi - 1, comparisons, swaps);
+        quickSortHelper(arr, pi + 1, high, comparisons, swaps);
+    }
+}
+
+void quickSort(const int original[], int n) {
+    int arr[100];
+    copyArray(original, arr, n);
+
+    int comparisons = 0, swaps = 0;
+
+    cout << "\n--- Quick Sort (step by step) ---\n";
+    cout << "Idea: pick a pivot, put smaller elements on its left and larger on its\n"
+         << "right, then repeat the same process on both sides.\n";
+    cout << "Initial array: ";
+    displayArray(arr, n);
+
+    if (n > 0) quickSortHelper(arr, 0, n - 1, comparisons, swaps);
+
+    cout << "\nSorted Array: ";
+    displayArray(arr, n);
+    cout << "Total Comparisons: " << comparisons << endl;
+    cout << "Total Swaps: " << swaps << endl;
+}
+
+
+int main() {
+    int choice;
+    int n;
+    int originalArr[100];
+
+    cout << "----------------------------------------\n";
+    cout << " DSA SORTING ALGORITHM ANALYZER \n";
+    cout << "-----------------------------------------\n";
+
+    cout << "Enter the number of elements (max 100): ";
+    cin >> n;
+
+    if (n <= 0 || n > 100) {
+        cout << "Invalid array size entered. Exiting.\n";
+        return 0;
+    }
+
+    cout << "Enter " << n << " elements:\n";
+    for (int i = 0; i < n; i++) cin >> originalArr[i];
+
+    do {
+        cout << "\n--------------------------------------\n";
+        cout << " MENU \n";
+        cout << "-----------------------------------------\n";
+        cout << "1. Bubble Sort\n";
+        cout << "2. Selection Sort\n";
+        cout << "3. Insertion Sort\n";
+        cout << "4. Merge Sort\n";
+        cout << "5. Quick Sort\n";
+        cout << "6. Run All Algorithms & Compare\n";
+        cout << "7. Enter a New Array\n";
+        cout << "8. Exit\n";
+        cout << "Enter your choice (1-8): ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: 
+              bubbleSort(originalArr, n); break;
+            case 2: 
+              selectionSort(originalArr, n); break;
+            case 3: 
+              insertionSort(originalArr, n); break;
+            case 4: 
+              mergeSort(originalArr, n); break;
+            case 5: 
+              quickSort(originalArr, n); break;
+            case 6:
+                cout << "\n========= RUNNING ALL ALGORITHMS =========";
+                bubbleSort(originalArr, n);
+                selectionSort(originalArr, n);
+                insertionSort(originalArr, n);
+                mergeSort(originalArr, n);
+                quickSort(originalArr, n);
+                cout << "\n---------------------------------------";
+                break;
+            case 7: {
+                int newN;
+                cout << "Enter the number of elements (max 100): ";
+                cin >> newN;
+                if (newN > 0 && newN <= 100) {
+                    n = newN;
+                    cout << "Enter " << n << " elements:\n";
+                    for (int i = 0; i < n; i++) cin >> originalArr[i];
+                    cout << "New array loaded successfully!\n";
+                } else {
+                    cout << "Invalid size! Keeping the old array.\n";
+                }
+                break;
+            }
+            case 8: cout << "Exiting analyzer. Goodbye!\n"; break;
+            default: cout << "Invalid choice! Select an option between 1 and 8.\n";
+        }
+    } while (choice != 8);
+
+    return 0;
+}
